@@ -100,6 +100,9 @@ namespace ui
                 pos_y = Console.WindowHeight / 2 - container.items.Length / 2;
             }
 
+            // clean console
+            Console.Clear();
+
             // return -1 becouse was canceled
             return -1;
         }
@@ -205,6 +208,9 @@ namespace ui
                 pos_y = Console.WindowHeight / 2 - container.items.Length / 2;
             }
 
+            // clean console
+            Console.Clear();
+
             // return result
             return result;
         }
@@ -244,6 +250,9 @@ namespace ui
 
             // await for uset action
             Console.ReadKey();
+
+            // clean console
+            Console.Clear();
         }
 
         // search langest item in array and return size of this item

@@ -15,8 +15,8 @@ namespace core
 
         // pages
         pageData logIn = new pageData("LogIn page", "ESC > exit, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "Address", "User name", "Password" });
-        pageData mainMenu = new pageData("Main menu", "ESC > exit, Up Down > Navigation, Space > select", new string[] { "Show all databases", "Show all tables", "Show table", "Insert data", "Create database", "Create table", "Delete database", "Delete table" });
-        pageData createDatabase = new pageData("Create database", "ESC > back, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "Database name" });
+        pageData mainMenu = new pageData("Main menu", "ESC > exit, Up Down > Navigation, Space > select", new string[] { "Show all folders", "Show all tables", "Show table", "Insert data", "Create folder", "Create table", "Delete folder", "Delete table" });
+        pageData createDatabase = new pageData("Create folder", "ESC > back, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "Folder name" });
         pageData createTable = new pageData("Create table", "ESC > back, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "Table name", "Number of columns" });
         pageData connectionError = new pageData("Connection error", "Press any key to exit...", new string[] { "Login or password not correct!" });
         pageData incorrectInput = new pageData("Input error", "Press any key to continue...", new string[] { "Check inputed data and try again" });
@@ -97,7 +97,7 @@ namespace core
                         databases = con.IO("SHOW DATABASES").Split(";");
 
                         // show to screen
-                        display.Message(new pageData("Databases list", "Press any key to back...", databases));
+                        display.Message(new pageData("Folders list", "Press any key to back...", databases));
                         break;
 
                     // show all tables from some database
@@ -111,7 +111,7 @@ namespace core
                         try
                         {
                             // show menu and get database name
-                            databaseName = databases[display.Menu(new pageData("Select database to show tables", "ESC > exit, Up Down > Navigation, Space > select", databases))];
+                            databaseName = databases[display.Menu(new pageData("Select folder to show tables", "ESC > exit, Up Down > Navigation, Space > select", databases))];
 
                             // show all tables from this database
                             display.Message(new pageData($"Tables list from {databaseName}", "Press any key to back to main menu...", con.IO($"SHOW TABLES FROM {databaseName}").Split(";")));
@@ -136,7 +136,7 @@ namespace core
                         try
                         {
                             // show menu and get database name
-                            databaseName = databases[display.Menu(new pageData("Select database to show tables", "ESC > exit, Up Down > Navigation, Space > select", databases))];
+                            databaseName = databases[display.Menu(new pageData("Select folder to show tables", "ESC > exit, Up Down > Navigation, Space > select", databases))];
 
                             // load tables list
                             tables = con.IO($"SHOW TABLES FROM {databaseName}").Split(";");
@@ -177,7 +177,7 @@ namespace core
                         try
                         {
                             // show menu and get database name
-                            databaseName = databases[display.Menu(new pageData("Select database to show tables", "ESC > exit, Up Down > Navigation, Space > select", databases))];
+                            databaseName = databases[display.Menu(new pageData("Select folder to show tables", "ESC > exit, Up Down > Navigation, Space > select", databases))];
 
                             // load tables list
                             tables = con.IO($"SHOW TABLES FROM {databaseName}").Split(";");
@@ -282,7 +282,7 @@ namespace core
                         try
                         {
                             // show menu and get database name
-                            databaseName = databases[display.Menu(new pageData("Select database to create table", "ESC > exit, Up Down > Navigation, Space > select", databases))];
+                            databaseName = databases[display.Menu(new pageData("Select folder to create table", "ESC > exit, Up Down > Navigation, Space > select", databases))];
 
                             // try exception
                             try
@@ -370,10 +370,10 @@ namespace core
                         try
                         {
                             // show menu and get database name
-                            databaseName = databases[display.Menu(new pageData("Select database to show tables", "ESC > exit, Up Down > Navigation, Space > select", databases))];
+                            databaseName = databases[display.Menu(new pageData("Select folder to show tables", "ESC > exit, Up Down > Navigation, Space > select", databases))];
 
                             // ask user about action
-                            if (display.Menu(new pageData($"Are you really want to delete {databaseName} database?", "ESC > exit, Up Down > Navigation, Space > select", new string[] { "No", "Yes" })) == 1)
+                            if (display.Menu(new pageData($"Are you really want to delete {databaseName} folder?", "ESC > exit, Up Down > Navigation, Space > select", new string[] { "No", "Yes" })) == 1)
                             {
                                 // make request for deleting
                                 con.I($"DROP DATABASE {databaseName}");
@@ -403,7 +403,7 @@ namespace core
                         try
                         {
                             // show menu and get database name
-                            databaseName = databases[display.Menu(new pageData("Select database to show tables", "ESC > exit, Up Down > Navigation, Space > select", databases))];
+                            databaseName = databases[display.Menu(new pageData("Select folder to show tables", "ESC > exit, Up Down > Navigation, Space > select", databases))];
 
                             // load tables list
                             tables = con.IO($"SHOW TABLES FROM {databaseName}").Split(";");

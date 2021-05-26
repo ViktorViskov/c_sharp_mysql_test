@@ -29,8 +29,13 @@ namespace ui
             // variables
             bool exit = false;
             int itemNumber = 0;
+            int currentPage = 0;
+            int maxLineLength = Console.WindowWidth - 6;
+            int maxLines = Console.WindowHeight - 6;
+            int pageLines = maxLines <= container.items.Length - currentPage * maxLines ? maxLines : container.items.Length - currentPage * maxLines;
+            int maxPages = (container.items.Length - 1) / maxLines;
             int pos_x = Console.WindowWidth / 2 - Langest(container.items) / 2;
-            int pos_y = Console.WindowHeight / 2 - container.items.Length / 2;
+            int pos_y = (Console.WindowHeight / 2 - pageLines / 2) - 1;
 
             // console initialization
             Console.CursorVisible = false;
@@ -41,33 +46,35 @@ namespace ui
                 // clean console
                 Console.Clear();
 
-                // print header and footer message
+                // print header, page number and footer message
                 Console.SetCursorPosition(Console.WindowWidth / 2 - container.header.Length / 2, 0);
                 Console.Write(container.header);
-                Console.SetCursorPosition(Console.WindowWidth / 2 - container.footer.Length / 2, Console.WindowHeight);
+                Console.SetCursorPosition(Console.WindowWidth / 2 - 6 / 2, Console.WindowHeight - 3);
+                Console.Write($"Page {currentPage + 1}");
+                Console.SetCursorPosition(Console.WindowWidth / 2 - container.footer.Length / 2, Console.WindowHeight - 1);
                 Console.Write(container.footer);
 
                 // init console
                 Console.SetCursorPosition(pos_x, pos_y);
 
                 // start printing
-                for (int i = 0; i < container.items.Length; i++)
+                for (int i = 0; i < maxLines && i + currentPage * maxLines < container.items.Length; i++)
                 {
                     // print targeted item
                     if (i == itemNumber)
                     {
                         Console.BackgroundColor = ConsoleColor.Blue;
-                        Console.Write(container.items[i]);
+                        Console.Write(container.items[i + currentPage * maxLines]);
                         Console.ResetColor();
                     }
                     // not targeted item
                     else
                     {
-                        Console.Write(container.items[i]);
+                        Console.Write(container.items[i + currentPage * maxLines]);
                     }
 
                     // set next cursor position
-                    Console.SetCursorPosition(pos_x, Console.GetCursorPosition().Top + 1);
+                    Console.SetCursorPosition(pos_x, pos_y + i + 1);
 
                 }
 
@@ -76,18 +83,28 @@ namespace ui
                 {
                     // move down
                     case ConsoleKey.DownArrow:
-                        itemNumber += itemNumber + 1 < container.items.Length ? 1 : 0;
-
+                        itemNumber += itemNumber + 1 < pageLines ? 1 : 0;
                         break;
 
                     // move up
                     case ConsoleKey.UpArrow:
                         itemNumber -= itemNumber - 1 < 0 ? 0 : 1;
                         break;
+                    // next page
+                    case ConsoleKey.RightArrow:
+                        itemNumber = 0;
+                        currentPage += currentPage != maxPages ? 1 : 0;
+                        break;
+
+                    // previous page
+                    case ConsoleKey.LeftArrow:
+                        itemNumber = 0;
+                        currentPage -= currentPage != 0 ? 1 : 0;
+                        break;
 
                     // make action
                     case ConsoleKey.Spacebar:
-                        return itemNumber;
+                        return itemNumber + (currentPage * maxLines);
 
                     // cancel action
                     case ConsoleKey.Escape:
@@ -96,8 +113,12 @@ namespace ui
                 }
 
                 // update positions
+                maxLineLength = Console.WindowWidth - 6;
+                maxLines = Console.WindowHeight - 6;
+                maxPages = (container.items.Length - 1) / maxLines;
+                pageLines = maxLines <= container.items.Length - currentPage * maxLines ? maxLines : container.items.Length - currentPage * maxLines;
                 pos_x = Console.WindowWidth / 2 - Langest(container.items) / 2;
-                pos_y = Console.WindowHeight / 2 - container.items.Length / 2;
+                pos_y = (Console.WindowHeight / 2 - pageLines / 2) - 1;
             }
 
             // clean console
@@ -130,9 +151,8 @@ namespace ui
                 // print header and footer message
                 Console.SetCursorPosition(Console.WindowWidth / 2 - container.header.Length / 2, 0);
                 Console.Write(container.header);
-                Console.SetCursorPosition(Console.WindowWidth / 2 - container.footer.Length / 2, Console.WindowHeight);
+                Console.SetCursorPosition(Console.WindowWidth / 2 - container.footer.Length / 2, Console.WindowHeight - 1);
                 Console.Write(container.footer);
-
 
                 // init console
                 Console.SetCursorPosition(pos_x, pos_y);
@@ -220,36 +240,77 @@ namespace ui
         {
 
             // variables
+            bool exit = false;
+            int currentPage = 0;
+            int maxLineLength = Console.WindowWidth - 6;
+            int maxLines = Console.WindowHeight - 6;
+            int pageLines = maxLines <= container.items.Length - currentPage * maxLines ? maxLines : container.items.Length - currentPage * maxLines;
+            int maxPages = (container.items.Length - 1) / maxLines;
             int pos_x = Console.WindowWidth / 2 - Langest(container.items) / 2;
-            int pos_y = Console.WindowHeight / 2 - container.items.Length / 2;
+            int pos_y = (Console.WindowHeight / 2 - pageLines / 2) - 1;
 
             // console initialization
             Console.CursorVisible = false;
 
-            // clean console
-            Console.Clear();
 
-            // print header and footer message
-            Console.SetCursorPosition(Console.WindowWidth / 2 - container.header.Length / 2, 0);
-            Console.Write(container.header);
-            Console.SetCursorPosition(Console.WindowWidth / 2 - container.footer.Length / 2, Console.WindowHeight);
-            Console.Write(container.footer);
 
-            // init console
-            Console.SetCursorPosition(pos_x, pos_y);
 
-            // start printing
-            for (int i = 0; i < container.items.Length; i++)
+
+
+            // start main interface loop
+            while (!exit)
             {
-                // print item
-                Console.Write(container.items[i]);
+                // clean console
+                Console.Clear();
 
-                // set next cursor position
-                Console.SetCursorPosition(pos_x, Console.GetCursorPosition().Top + 1);
+                // print header, page number and footer message
+                Console.SetCursorPosition(Console.WindowWidth / 2 - container.header.Length / 2, 0);
+                Console.Write(container.header);
+                Console.SetCursorPosition(Console.WindowWidth / 2 - 6 / 2, Console.WindowHeight - 3);
+                Console.Write($"Page {currentPage + 1}");
+                Console.SetCursorPosition(Console.WindowWidth / 2 - container.footer.Length / 2, Console.WindowHeight - 1);
+                Console.Write(container.footer);
+
+                // init console
+                Console.SetCursorPosition(pos_x, pos_y);
+
+                // start printing
+                for (int i = 0; i < maxLines && i + currentPage * maxLines < container.items.Length; i++)
+                {
+                    // print item
+                    Console.Write(container.items[i + currentPage * maxLines]);
+
+                    // set next cursor position
+                    Console.SetCursorPosition(pos_x, pos_y + i + 1);
+                }
+
+                // read user input
+                switch (Console.ReadKey(true).Key)
+                {
+                    // next page
+                    case ConsoleKey.RightArrow:
+                        currentPage += currentPage != maxPages ? 1 : 0;
+                        break;
+
+                    // previous page
+                    case ConsoleKey.LeftArrow:
+                        currentPage -= currentPage != 0 ? 1 : 0;
+                        break;
+
+                    // exit action
+                    case ConsoleKey.Escape:
+                        exit = true;
+                        break;
+                }
+
+                // update positions
+                maxLineLength = Console.WindowWidth - 6;
+                maxLines = Console.WindowHeight - 6;
+                maxPages = (container.items.Length - 1) / maxLines;
+                pageLines = maxLines <= container.items.Length - currentPage * maxLines ? maxLines : container.items.Length - currentPage * maxLines;
+                pos_x = Console.WindowWidth / 2 - Langest(container.items) / 2;
+                pos_y = (Console.WindowHeight / 2 - pageLines / 2) - 1;
             }
-
-            // await for uset action
-            Console.ReadKey();
 
             // clean console
             Console.Clear();

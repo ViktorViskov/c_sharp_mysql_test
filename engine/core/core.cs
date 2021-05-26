@@ -15,7 +15,7 @@ namespace core
 
         // pages
         pageData logIn = new pageData("LogIn page", "ESC > exit, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "Address", "User name", "Password" });
-        pageData mainMenu = new pageData("Main menu", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", new string[] { "Show all schools", "Show all classes", "Show students", "Add student", "Create school", "Create class", "Create table", "Delete school", "Delete class" });
+        pageData mainMenu = new pageData("Main menu", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", new string[] { "Show all schools", "Show all classes", "Show students", "Add student", "Create school", "Create class", "Create table", "Delete school", "Delete class", "Delete student" });
         pageData createDatabase = new pageData("Create school", "ESC > back, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "School name" });
         pageData createTable = new pageData("Create table", "ESC > back, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "Table name", "Number of columns" });
         pageData createClass = new pageData("Create Class", "ESC > back, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "Class name" });
@@ -73,8 +73,10 @@ namespace core
                 // variables;
                 string[] databases;
                 string[] tables;
+                string[] items;
                 string databaseName;
                 string tableName;
+                string itemName;
                 string[] tableInfo;
                 string[] requestArray;
                 object[] userInput;
@@ -290,7 +292,7 @@ namespace core
                                     try
                                     {
                                         // make request
-                                        con.I($"CREATE TABLE {databaseName}.{userInput[0]} (CPR INT, name varchar(255), age int, PRIMARY KEY (CPR))");
+                                        con.I($"CREATE TABLE {databaseName}.{userInput[0]} (CPR varchar(10), age int, name varchar(255), PRIMARY KEY (CPR))");
 
                                         // print message
                                         display.Message(successMessage);
@@ -463,6 +465,68 @@ namespace core
                                     // show success message
                                     display.Message(successMessage);
                                 }
+                            }
+
+                            // if esc stop
+                            catch
+                            {
+                                break;
+                            }
+                        }
+
+                        // if pressed esc, continue loop
+                        catch
+                        {
+                            break;
+                        }
+                        break;
+
+                    // dete student from school
+                    case 9:
+                        // load databases list
+                        databases = con.IO("SHOW DATABASES").Split(";");
+
+                        // try exception
+                        try
+                        {
+                            // show menu and get database name
+                            databaseName = databases[display.Menu(new pageData("Select school to show classes", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", databases))];
+
+                            // load tables list
+                            tables = con.IO($"SHOW TABLES FROM {databaseName}").Split(";");
+
+                            // try exception
+                            try
+                            {
+                                // show menu and get table name
+                                tableName = tables[display.Menu(new pageData("Select class to show students", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", tables))];
+
+                                // load items list
+                                items = con.IO($"SELECT * FROM {databaseName}.{tableName}").Replace(",", "\t").Split(";");
+
+                                // try exception
+                                try
+                                {
+                                    // show menu and get table name
+                                    itemName = items[display.Menu(new pageData("Select student to delete", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", items))];
+
+                                    // ask user about action
+                                    if (display.Menu(new pageData($"Are you really want to delete {itemName.Split("\t")[2]}?", "ESC > exit, Up Down > Navigation, Space > select", new string[] { "No", "Yes" })) == 1)
+                                    {
+
+                                        // make request for deleting
+                                        con.I($"DELETE FROM {databaseName}.{tableName} WHERE CPR={itemName.Split("\t")[0]}");
+
+                                        // show success message
+                                        display.Message(successMessage);
+                                    }
+                                }
+
+                                catch
+                                {
+                                    break;
+                                }
+
                             }
 
                             // if esc stop

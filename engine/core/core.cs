@@ -15,9 +15,10 @@ namespace core
 
         // pages
         pageData logIn = new pageData("LogIn page", "ESC > exit, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "Address", "User name", "Password" });
-        pageData mainMenu = new pageData("Main menu", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", new string[] { "Show all schools", "Show all classes", "Show students", "Add student", "Create school", "Create class", "Delete school", "Delete class" });
+        pageData mainMenu = new pageData("Main menu", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", new string[] { "Show all schools", "Show all classes", "Show students", "Add student", "Create school", "Create class", "Create table", "Delete school", "Delete class" });
         pageData createDatabase = new pageData("Create school", "ESC > back, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "School name" });
         pageData createTable = new pageData("Create table", "ESC > back, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "Table name", "Number of columns" });
+        pageData createClass = new pageData("Create Class", "ESC > back, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "Class name" });
         pageData connectionError = new pageData("Connection error", "Press ESC to exit...", new string[] { "Login or password not correct!" });
         pageData incorrectInput = new pageData("Input error", "Press ESC to continue...", new string[] { "Check inputed data and try again" });
         pageData successMessage = new pageData("Success", "Press ESC to continue...", new string[] { "Operation was successful" });
@@ -161,7 +162,7 @@ namespace core
                         }
 
                         break;
-                    
+
                     // add data to database
                     case 3:
                         // load databases list
@@ -265,8 +266,59 @@ namespace core
 
                         break;
 
-                    // create table
+                    // create class
                     case 5:
+                        // load databases list
+                        databases = con.IO("SHOW DATABASES").Split(";");
+
+                        // try exeption
+                        try
+                        {
+                            // show menu and get database name
+                            databaseName = databases[display.Menu(new pageData("Select database to create table", "ESC > exit, Up Down > Navigation, Space > select", databases))];
+
+                            // try exception
+                            try
+                            {
+                                // get information about table
+                                userInput = display.Input(createClass);
+
+                                // check for userInput is not empty
+                                if (userInput.Length != 0)
+                                {
+                                    // try exception
+                                    try
+                                    {
+                                        // make request
+                                        con.I($"CREATE TABLE {databaseName}.{userInput[0]} (CPR INT, name varchar(255), age int, PRIMARY KEY (CPR))");
+
+                                        // print message
+                                        display.Message(successMessage);
+                                    }
+
+                                    // print message error
+                                    catch
+                                    {
+                                        display.Message(incorrectInput);
+                                    }
+                                }
+                            }
+                            // incorect number for columns
+                            catch
+                            {
+                                display.Message(incorrectInput);
+                            }
+                        }
+
+                        // if cancel back
+                        catch
+                        {
+                            break;
+                        }
+                        break;
+
+                    // create table
+                    case 6:
                         // load databases list
                         databases = con.IO("SHOW DATABASES").Split(";");
 
@@ -352,7 +404,7 @@ namespace core
                         break;
 
                     // delete database
-                    case 6:
+                    case 7:
                         // load databases list
                         databases = con.IO("SHOW DATABASES").Split(";");
 
@@ -383,7 +435,7 @@ namespace core
                         break;
 
                     // dete table from database
-                    case 7:
+                    case 8:
                         // load databases list
                         databases = con.IO("SHOW DATABASES").Split(";");
 

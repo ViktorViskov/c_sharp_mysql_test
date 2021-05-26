@@ -15,12 +15,12 @@ namespace core
 
         // pages
         pageData logIn = new pageData("LogIn page", "ESC > exit, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "Address", "User name", "Password" });
-        pageData mainMenu = new pageData("Main menu", "ESC > exit, Up Down > Navigation, Space > select", new string[] { "Show all folders", "Show all tables", "Show table", "Insert data", "Create folder", "Create table", "Delete folder", "Delete table" });
-        pageData createDatabase = new pageData("Create folder", "ESC > back, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "Folder name" });
+        pageData mainMenu = new pageData("Main menu", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", new string[] { "Show all schools", "Show all classes", "Show students", "Add student", "Create school", "Create class", "Delete school", "Delete class" });
+        pageData createDatabase = new pageData("Create school", "ESC > back, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "School name" });
         pageData createTable = new pageData("Create table", "ESC > back, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "Table name", "Number of columns" });
-        pageData connectionError = new pageData("Connection error", "Press any key to exit...", new string[] { "Login or password not correct!" });
-        pageData incorrectInput = new pageData("Input error", "Press any key to continue...", new string[] { "Check inputed data and try again" });
-        pageData successMessage = new pageData("Success", "Press any key to continue...", new string[] { "Operation was successful" });
+        pageData connectionError = new pageData("Connection error", "Press ESC to exit...", new string[] { "Login or password not correct!" });
+        pageData incorrectInput = new pageData("Input error", "Press ESC to continue...", new string[] { "Check inputed data and try again" });
+        pageData successMessage = new pageData("Success", "Press ESC to continue...", new string[] { "Operation was successful" });
 
 
         // constructor
@@ -97,7 +97,7 @@ namespace core
                         databases = con.IO("SHOW DATABASES").Split(";");
 
                         // show to screen
-                        display.Message(new pageData("Folders list", "Press any key to back...", databases));
+                        display.Message(new pageData("School list", "Left Right > Pages, Press ESC to back...", databases));
                         break;
 
                     // show all tables from some database
@@ -105,16 +105,14 @@ namespace core
                         // load databases list
                         databases = con.IO("SHOW DATABASES").Split(";");
 
-                        // TODO fix bug if many values its give console error. Cursor position is - number
-
                         // try exception
                         try
                         {
                             // show menu and get database name
-                            databaseName = databases[display.Menu(new pageData("Select folder to show tables", "ESC > exit, Up Down > Navigation, Space > select", databases))];
+                            databaseName = databases[display.Menu(new pageData("Select school to show classes", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", databases))];
 
                             // show all tables from this database
-                            display.Message(new pageData($"Tables list from {databaseName}", "Press any key to back to main menu...", con.IO($"SHOW TABLES FROM {databaseName}").Split(";")));
+                            display.Message(new pageData($"Classes from {databaseName} school", "Press ESC to back to main menu...", con.IO($"SHOW TABLES FROM {databaseName}").Split(";")));
                         }
 
                         // if pressed esc, continue loop
@@ -130,13 +128,11 @@ namespace core
                         // load databases list
                         databases = con.IO("SHOW DATABASES").Split(";");
 
-                        // TODO fix bug if many values its give console error. Cursor position is - number
-
                         // try exception
                         try
                         {
                             // show menu and get database name
-                            databaseName = databases[display.Menu(new pageData("Select folder to show tables", "ESC > exit, Up Down > Navigation, Space > select", databases))];
+                            databaseName = databases[display.Menu(new pageData("Select school to show classes", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", databases))];
 
                             // load tables list
                             tables = con.IO($"SHOW TABLES FROM {databaseName}").Split(";");
@@ -145,10 +141,10 @@ namespace core
                             try
                             {
                                 // show menu and get table name
-                                tableName = tables[display.Menu(new pageData("Select table to show all data", "ESC > exit, Up Down > Navigation, Space > select", tables))];
+                                tableName = tables[display.Menu(new pageData("Select class to show all students", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", tables))];
 
                                 // show all data from this table
-                                display.Message(new pageData($"Data from {databaseName}/{tableName}", "Press any key to back to main menu...", con.IO($"SELECT * FROM {databaseName}.{tableName}").Replace(",", "\t").Split(";")));
+                                display.Message(new pageData($"Students from {databaseName}/{tableName}", "Left Right > Pages, Press ESC to back to main menu...", con.IO($"SELECT * FROM {databaseName}.{tableName}").Replace(",", "\t").Split(";")));
                             }
 
                             // if esc stop
@@ -171,13 +167,11 @@ namespace core
                         // load databases list
                         databases = con.IO("SHOW DATABASES").Split(";");
 
-                        // TODO fix bug if many values its give console error. Cursor position is - number
-
                         // try exception
                         try
                         {
                             // show menu and get database name
-                            databaseName = databases[display.Menu(new pageData("Select folder to show tables", "ESC > exit, Up Down > Navigation, Space > select", databases))];
+                            databaseName = databases[display.Menu(new pageData("Select school to show classes", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", databases))];
 
                             // load tables list
                             tables = con.IO($"SHOW TABLES FROM {databaseName}").Split(";");
@@ -186,7 +180,7 @@ namespace core
                             try
                             {
                                 // show menu and get table name
-                                tableName = tables[display.Menu(new pageData("Select table to show all data", "ESC > exit, Up Down > Navigation, Space > select", tables))];
+                                tableName = tables[display.Menu(new pageData("Select class to show all students", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", tables))];
 
                                 // try exception
                                 try
@@ -204,7 +198,7 @@ namespace core
                                     }
 
                                     // getting data from user
-                                    userInput = display.Input(new pageData($"Add data to {databaseName}/{tableName}", "ESC > back, Up Down > Navigation, Enter > input data, Space > continue", requestArray));
+                                    userInput = display.Input(new pageData($"Add student to {databaseName}/{tableName}", "ESC > back, Up Down > Navigation, Enter > input data, Space > continue", requestArray));
 
                                     if (userInput.Length != 0)
                                     {
@@ -276,13 +270,11 @@ namespace core
                         // load databases list
                         databases = con.IO("SHOW DATABASES").Split(";");
 
-                        // TODO fix bug if many values its give console error. Cursor position is - number
-
                         // try exception
                         try
                         {
                             // show menu and get database name
-                            databaseName = databases[display.Menu(new pageData("Select folder to create table", "ESC > exit, Up Down > Navigation, Space > select", databases))];
+                            databaseName = databases[display.Menu(new pageData("Select database to create table", "ESC > exit, Up Down > Navigation, Space > select", databases))];
 
                             // try exception
                             try
@@ -364,16 +356,14 @@ namespace core
                         // load databases list
                         databases = con.IO("SHOW DATABASES").Split(";");
 
-                        // TODO fix bug if many values its give console error. Cursor position is - number
-
                         // try exception
                         try
                         {
                             // show menu and get database name
-                            databaseName = databases[display.Menu(new pageData("Select folder to show tables", "ESC > exit, Up Down > Navigation, Space > select", databases))];
+                            databaseName = databases[display.Menu(new pageData("Select school to show classes", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", databases))];
 
                             // ask user about action
-                            if (display.Menu(new pageData($"Are you really want to delete {databaseName} folder?", "ESC > exit, Up Down > Navigation, Space > select", new string[] { "No", "Yes" })) == 1)
+                            if (display.Menu(new pageData($"Are you really want to delete {databaseName} school?", "ESC > exit, Up Down > Navigation, Space > select", new string[] { "No", "Yes" })) == 1)
                             {
                                 // make request for deleting
                                 con.I($"DROP DATABASE {databaseName}");
@@ -397,13 +387,11 @@ namespace core
                         // load databases list
                         databases = con.IO("SHOW DATABASES").Split(";");
 
-                        // TODO fix bug if many values its give console error. Cursor position is - number
-
                         // try exception
                         try
                         {
                             // show menu and get database name
-                            databaseName = databases[display.Menu(new pageData("Select folder to show tables", "ESC > exit, Up Down > Navigation, Space > select", databases))];
+                            databaseName = databases[display.Menu(new pageData("Select school to show classes", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", databases))];
 
                             // load tables list
                             tables = con.IO($"SHOW TABLES FROM {databaseName}").Split(";");
@@ -412,10 +400,10 @@ namespace core
                             try
                             {
                                 // show menu and get table name
-                                tableName = tables[display.Menu(new pageData("Select table to show all data", "ESC > exit, Up Down > Navigation, Space > select", tables))];
+                                tableName = tables[display.Menu(new pageData("Select class to delete", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", tables))];
 
                                 // ask user about action
-                                if (display.Menu(new pageData($"Are you really want to delete {databaseName}/{tableName} table?", "ESC > exit, Up Down > Navigation, Space > select", new string[] { "No", "Yes" })) == 1)
+                                if (display.Menu(new pageData($"Are you really want to delete {databaseName}/{tableName} class?", "ESC > exit, Up Down > Navigation, Space > select", new string[] { "No", "Yes" })) == 1)
                                 {
                                     // make request for deleting
                                     con.I($"DROP TABLE {databaseName}.{tableName}");
@@ -438,8 +426,6 @@ namespace core
                             break;
                         }
                         break;
-
-
                 }
             }
         }

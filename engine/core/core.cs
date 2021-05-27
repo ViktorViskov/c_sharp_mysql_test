@@ -15,13 +15,16 @@ namespace core
 
         // pages
         pageData logIn = new pageData("LogIn page", "ESC > exit, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "Address", "User name", "Password" });
-        pageData mainMenu = new pageData("Main menu", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", new string[] { "Show all schools", "Show all classes", "Show students", "Add student", "Create school", "Create class", "Create table", "Delete school", "Delete class", "Delete student" });
+        pageData mainMenu = new pageData("Main menu", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", new string[] { "Show all schools", "Show all classes", "Show students", "Add student", "Create school", "Create class", "Create table", "Delete school", "Delete class", "Delete student", "Make backup", "Restore backup" });
         pageData createDatabase = new pageData("Create school", "ESC > back, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "School name" });
         pageData createTable = new pageData("Create table", "ESC > back, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "Table name", "Number of columns" });
         pageData createClass = new pageData("Create Class", "ESC > back, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "Class name" });
         pageData connectionError = new pageData("Connection error", "Press ESC to exit...", new string[] { "Login or password not correct!" });
         pageData incorrectInput = new pageData("Input error", "Press ESC to continue...", new string[] { "Check inputed data and try again" });
+        pageData errorMessage = new pageData("Error", "Press ESC to continue...", new string[] { "Operation failed!" });
         pageData successMessage = new pageData("Success", "Press ESC to continue...", new string[] { "Operation was successful" });
+        pageData backupError = new pageData("Error", "Press ESC to continue...", new string[] { "Backup name is allredy in use" });
+        pageData restoreBackup = new pageData("Restore backup page", "ESC > exit, Up Down > Navigation, Enter > input data, Space > continue", new string[] { "File name" });
 
 
         // constructor
@@ -82,6 +85,7 @@ namespace core
                 object[] userInput;
                 int columnAmount;
                 string stringRequest;
+                string backupFileName;
 
                 // show menu and get user action
                 int userAction = display.Menu(mainMenu);
@@ -541,6 +545,104 @@ namespace core
                         {
                             break;
                         }
+                        break;
+
+                    // make backup
+                    case 10:
+                        // load databases list
+                        databases = con.IO("SHOW DATABASES").Split(";");
+
+                        // try exception
+                        try
+                        {
+                            // show menu and get database name
+                            databaseName = databases[display.Menu(new pageData("Select school to show classes", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", databases))];
+
+                            // load tables list
+                            tables = con.IO($"SHOW TABLES FROM {databaseName}").Split(";");
+
+                            try
+                            {
+                                // show menu and get table name
+                                tableName = tables[display.Menu(new pageData("Select class to show students", "ESC > exit, Up Down > Navigation, Left Right > Pages, Space > select", tables))];
+
+                                // try exception
+                                try
+                                {
+                                    // make table backup
+                                    con.I($"SELECT * INTO OUTFILE '/backup/{databaseName}_{tableName}_{con.IO("SELECT CURRENT_TIMESTAMP()").Replace(' ', '_')}.backup' FROM {databaseName}.{tableName}");
+
+                                    // show success message
+                                    display.Message(successMessage);
+                                }
+
+                                catch
+                                {
+                                    // show error message
+                                    display.Message(backupError);
+                                }
+
+                            }
+
+                            // if esc stop
+                            catch
+                            {
+                                break;
+                            }
+                        }
+
+                        // if pressed esc, continue loop
+                        catch
+                        {
+                            break;
+                        }
+
+                        break;
+
+                    // restore backup
+                    case 11:
+
+                        // try exception
+                        try
+                        {
+                            // get backupfile name
+                            backupFileName = $"{display.Input(restoreBackup)[0]}";
+
+                            // if inputed some data
+                            if (backupFileName != null)
+                            {
+                                // try exception
+                                try
+                                {
+                                    // string proccesing
+                                    databaseName = backupFileName.Split('_')[0];
+                                    tableName = backupFileName.Split('_')[1];
+
+                                    // create table and database if not exist
+                                    con.I($"CREATE DATABASE IF NOT EXISTS {databaseName}");
+                                    con.I($"CREATE TABLE IF NOT EXISTS {databaseName}.{tableName} (CPR varchar(10), age int, name varchar(255), PRIMARY KEY (CPR))");
+
+                                    // make restore request
+                                    con.I($"LOAD DATA INFILE '/backup/{backupFileName}' REPLACE INTO TABLE {backupFileName.Split('_')[0]}.{backupFileName.Split('_')[1]}");
+
+                                    // display message
+                                    display.Message(successMessage);
+                                }
+                                // print error
+                                catch
+                                {
+                                    display.Message(errorMessage);
+                                }
+                            }
+
+                        }
+
+                        // if pressed esc, continue loop
+                        catch
+                        {
+                            break;
+                        }
+
                         break;
                 }
             }

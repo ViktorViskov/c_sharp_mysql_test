@@ -839,26 +839,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\vikt3586\\.nuget\\packages\\": {}
+    "/home/viktor/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\vikt3586\\Documents\\OOP\\c_sharp_mysql_test\\console_menu.csproj",
+      "projectUniqueName": "/m_dev/c#/console_menu/console_menu.csproj",
       "projectName": "console_menu",
-      "projectPath": "C:\\Users\\vikt3586\\Documents\\OOP\\c_sharp_mysql_test\\console_menu.csproj",
-      "packagesPath": "C:\\Users\\vikt3586\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\vikt3586\\Documents\\OOP\\c_sharp_mysql_test\\obj\\",
+      "projectPath": "/m_dev/c#/console_menu/console_menu.csproj",
+      "packagesPath": "/home/viktor/.nuget/packages/",
+      "outputPath": "/m_dev/c#/console_menu/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\vikt3586\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/home/viktor/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net5.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -897,7 +895,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.103\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/5.0.203/RuntimeIdentifierGraph.json"
       }
     }
   }

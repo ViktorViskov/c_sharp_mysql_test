@@ -34,7 +34,7 @@ namespace ui
             int maxLines = Console.WindowHeight - 6;
             int pageLines = maxLines <= container.items.Length - currentPage * maxLines ? maxLines : container.items.Length - currentPage * maxLines;
             int maxPages = (container.items.Length - 1) / maxLines;
-            int pos_x = Console.WindowWidth / 2 - Langest(container.items) / 2;
+            int pos_x = Console.WindowWidth / 2 - (Langest(container.items) < maxLineLength ? Langest(container.items) : maxLineLength) / 2;
             int pos_y = (Console.WindowHeight / 2 - pageLines / 2) - 1;
 
             // console initialization
@@ -248,7 +248,7 @@ namespace ui
             int maxLines = Console.WindowHeight - 6;
             int pageLines = maxLines <= container.items.Length - currentPage * maxLines ? maxLines : container.items.Length - currentPage * maxLines;
             int maxPages = (container.items.Length - 1) / maxLines;
-            int pos_x = Console.WindowWidth / 2 - Langest(container.items) / 2;
+            int pos_x = Console.WindowWidth / 2 - (Langest(container.items) < maxLineLength ? Langest(container.items) : maxLineLength) / 2;
             int pos_y = (Console.WindowHeight / 2 - pageLines / 2) - 1;
 
             // console initialization
